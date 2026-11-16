@@ -6,6 +6,7 @@ import { SectionHeader } from '../components/SectionHeader'
 import { StatusBadge } from '../components/StatusBadge'
 
 export function Home({ books, onNavigate }: { books: Book[]; onNavigate: (path: string) => void }) {
+  const recent = books.flatMap(book => (book.quotes ?? []).map(quote => ({ book, quote }))).sort((a, b) => b.quote.createdAt.localeCompare(a.quote.createdAt))[0]
   const current = books.find((book) => book.status === 'reading')
   const readThisYear = books.filter((book) => book.status === 'read' && book.finishedAt?.startsWith(String(new Date().getFullYear()))).length
   const counts = [
@@ -27,7 +28,7 @@ export function Home({ books, onNavigate }: { books: Book[]; onNavigate: (path: 
             <h2>{current.title}</h2><p className="author">by {current.author}</p>
             <div className="progress-copy"><span>Page {current.currentPage ?? 0} of {current.totalPages ?? '—'}</span><strong>{percent}%</strong></div>
             <ProgressBar value={percent} />
-            <button className="primary-button">Continue reading <span>→</span></button>
+            <button className="primary-button" onClick={() => onNavigate(`/book/${current.id}`)}>Continue reading <span>→</span></button>
           </div>
           <blockquote>“The object isn’t to make art, it’s to be in that wonderful state which makes art inevitable.”</blockquote>
         </div>
@@ -38,7 +39,7 @@ export function Home({ books, onNavigate }: { books: Book[]; onNavigate: (path: 
       </section>
       <div className="home-bottom">
         <section className="overview"><SectionHeader title="Reading overview" /><div className="stats">{counts.map((item) => <div key={item.label}><strong>{String(item.value).padStart(2, '0')}</strong><span>{item.label}</span></div>)}</div></section>
-        <section className="recent-quote"><p className="eyebrow">Recent quote</p><blockquote>“A reader lives a thousand lives before he dies. The man who never reads lives only one.”</blockquote><p><strong>A Dance with Dragons</strong><br />George R. R. Martin</p></section>
+        <section className="recent-quote"><p className="eyebrow">Recent quote</p>{recent ? <><blockquote>“{recent.quote.text}”</blockquote><a className="quote-source" href={`/book/${recent.book.id}`}>{recent.book.title} · {recent.book.author}{recent.quote.page !== undefined && ` · p. ${recent.quote.page}`}</a></> : <><blockquote>A place for the words that stay with you.</blockquote><p>Add your first quote from a book’s journal.</p></>}</section>
       </div>
     </div>
   )

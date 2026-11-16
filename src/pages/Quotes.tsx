@@ -1,0 +1,8 @@
+import { useState } from 'react'
+import type { Book } from '../types/book'
+export function Quotes({ books }: { books: Book[] }) {
+  const [query, setQuery] = useState('')
+  const quotes = books.flatMap(book => (book.quotes ?? []).map(quote => ({ book, quote }))).sort((a, b) => b.quote.createdAt.localeCompare(a.quote.createdAt))
+  const visible = quotes.filter(({ book, quote }) => `${quote.text} ${book.title} ${book.author}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+  return <div className="page quotes-page"><header className="page-intro"><p className="eyebrow">A commonplace book</p><h1>Quotes</h1><p>The words you carry beyond the last page.</p></header><label className="search quotes-search"><span>⌕</span><input aria-label="Search quotes, books or authors" placeholder="Search quotes, books or authors" value={query} onChange={e => setQuery(e.target.value)} /></label><p className="result-count">{visible.length} {visible.length === 1 ? 'quote' : 'quotes'}</p>{visible.length ? <div className="quotes-list">{visible.map(({ book, quote }) => <article className="journal-quote" key={quote.id}><blockquote>“{quote.text}”</blockquote><a className="quote-source" href={`/book/${book.id}`}>{book.title} · {book.author}{quote.page !== undefined && ` · p. ${quote.page}`} →</a></article>)}</div> : <div className="empty-state"><h2>{quotes.length ? 'No matching words' : 'A collection waiting to begin'}</h2><p>{quotes.length ? 'Try a different quote, title or author.' : 'Open a book in your library and save your first quote.'}</p><a className="quote-source" href="/library">Explore your library →</a></div>}</div>
+}

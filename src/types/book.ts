@@ -1,5 +1,12 @@
 export type BookStatus = 'want-to-read' | 'reading' | 'read'
 
+export interface Quote {
+  id: string
+  text: string
+  page?: number
+  createdAt: string
+}
+
 export interface Book {
   id: string
   title: string
@@ -10,6 +17,8 @@ export interface Book {
   currentPage?: number
   rating?: number
   startedAt?: string
+  quotes?: Quote[]
+  notes?: string
   finishedAt?: string
 }
 

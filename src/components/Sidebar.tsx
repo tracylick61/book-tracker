@@ -8,7 +8,7 @@ export function Sidebar({ path, onNavigate, onAdd }: SidebarProps) {
       <nav aria-label="Main navigation">
         {link('/', 'Home')}
         {link('/library', 'Library')}
-        <span className="disabled-link">Quotes <small>Soon</small></span>
+        {link('/quotes', 'Quotes')}
       </nav>
       <button className="primary-button sidebar-add" onClick={onAdd}>+ Add book</button>
       <p className="sidebar-foot">Your reading life,<br />collected quietly.</p>
