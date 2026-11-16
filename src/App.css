@@ -129,6 +129,6 @@ textarea { width: 100%; resize: vertical; padding: 15px; border: 1px solid var(-
 .link-button:not(:disabled):is(:hover, :focus-visible), .back-link:focus-visible, .quote-source:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 .close-button:hover, .close-button:focus-visible { color: var(--accent-dark); background: var(--accent-soft); }
 .quotes-page .search:focus-within { outline: 2px solid var(--accent); outline-offset: 4px; }
-/* Use the existing line slot; the larger CTA extends into the empty state’s padding. */
-.quotes-empty-cta { border-color: var(--accent); margin-block: -12px; }
+/* Keep the existing line slot and use bottom padding for a 24–32px visual gap. */
+.quotes-empty-cta { position: relative; top: var(--space-3); border-color: var(--accent); margin-block: -12px; }
 .quotes-empty-cta:not(:disabled):hover { background: var(--accent-soft); }
