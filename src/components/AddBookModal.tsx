@@ -37,7 +37,7 @@ export function AddBookModal({ open, onClose, onAdd, book }: Props) {
             {form.status === 'read' && <label>Оценка<select aria-label="Оценка" value={form.rating} onChange={(e) => set('rating', e.target.value)}>{[5,4,3,2,1].map((n) => <option key={n} value={n}>{n} из 5</option>)}</select></label>}
           </div>
           {error && <p className="form-error">{error}</p>}
-          <div className="form-actions"><button type="button" className="text-button" onClick={onClose}>Отмена</button><button className="primary-button" type="submit">{book ? 'Сохранить изменения' : 'Добавить в библиотеку'}</button></div>
+          <div className="form-actions"><button type="button" className="secondary-button" onClick={onClose}>Отмена</button><button className="primary-button" type="submit">{book ? 'Сохранить изменения' : 'Добавить в библиотеку'}</button></div>
         </form>
       </section>
     </div>
