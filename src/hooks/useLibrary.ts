@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { normalizeBookProgress } from '../data/bookProgress'
 import { loadBooks, saveBooks } from '../data/libraryStorage'
 import type { Book, NewBook, Quote } from '../types/book'
 
 export function useLibrary() {
   const [books, setBooks] = useState<Book[]>(loadBooks)
   const commit = (transform: (current: Book[]) => Book[]) => setBooks(current => {
-    const next = transform(current)
+    const next = transform(current).map(normalizeBookProgress)
     saveBooks(next)
     return next
   })
