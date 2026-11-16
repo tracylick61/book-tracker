@@ -29,3 +29,13 @@ body { margin: 0; min-width: 1000px; min-height: 100vh; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 h1, h2, h3, p, blockquote { margin-top: 0; }
+
+:root {
+  --accent-soft: #ebddd5;
+  --success: #52664d;
+  --success-soft: #e6ebe1;
+  --control-border: #94877b;
+  --danger: #a12d27;
+  --danger-dark: #7d221e;
+  --danger-soft: #f6e6e2;
+}

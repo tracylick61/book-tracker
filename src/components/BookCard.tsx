@@ -1,5 +1,6 @@
 import type { Book } from '../types/book'
 import { BookCover } from './BookCover'
+import { ProgressBar } from './ProgressBar'
 import { StatusBadge } from './StatusBadge'
 
 export function BookCard({ book }: { book: Book }) {
@@ -10,7 +11,8 @@ export function BookCard({ book }: { book: Book }) {
         <StatusBadge status={book.status} />
         <h3>{book.title}</h3>
         <p>{book.author}</p>
-        {book.status === 'read' && book.rating && <div className="rating" aria-label={`${book.rating} out of 5 stars`}>{'★'.repeat(book.rating)}<span>{'★'.repeat(5 - book.rating)}</span></div>}
+        {book.status === 'reading' && <div className="card-reading-progress"><ProgressBar value={book.totalPages ? (book.currentPage ?? 0) / book.totalPages * 100 : 0} /><span>{book.currentPage ?? 0} из {book.totalPages ?? '—'} стр.</span></div>}
+        {book.status === 'read' && book.rating && <div className="rating" aria-label={`Оценка: ${book.rating} из 5`}>{'★'.repeat(book.rating)}<span>{'★'.repeat(5 - book.rating)}</span></div>}
       </div>
     </a></article>
   )
