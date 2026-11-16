@@ -6,47 +6,52 @@ import { BookCover } from '../components/BookCover'
 import { StatusBadge } from '../components/StatusBadge'
 import { ProgressBar } from '../components/ProgressBar'
 import { AddBookModal } from '../components/AddBookModal'
+import { BookNotes } from '../components/BookNotes'
+import { BookQuotes } from '../components/BookQuotes'
+import { readingDate } from '../lib/readingFormat'
+import '../journal.css'
 
 type Props = { book: Book; library: ReturnType<typeof useLibrary>; onNavigate: (path: string) => void }
-const date = (value: string) => new Date(value).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })
 export function BookDetail({ book, library, onNavigate }: Props) {
   const [editing, setEditing] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [pageDraft, setPage] = useState<string | null>(null)
-  const page = pageDraft ?? String(book.currentPage ?? 0)
-  const [text, setText] = useState('')
-  const [quotePage, setQuotePage] = useState('')
-  const [notes, setNotes] = useState(book.notes ?? '')
   const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
+  const page = pageDraft ?? String(book.currentPage ?? 0)
   const closeDelete = () => setDeleting(false)
   useDialog(deleting, closeDelete)
-  const percent = book.totalPages ? Math.round((book.currentPage ?? 0) / book.totalPages * 100) : 0
+  const percent = book.status === 'read' ? 100 : book.totalPages ? Math.round((book.currentPage ?? 0) / book.totalPages * 100) : 0
   const validPage = page.trim() !== '' && Number.isInteger(Number(page)) && Number(page) >= 0 && (book.totalPages === undefined || Number(page) <= book.totalPages)
-  const addQuote = (event: FormEvent) => {
+  const updateProgress = (event: FormEvent) => {
     event.preventDefault()
-    if (!text.trim() || (quotePage !== '' && (!Number.isInteger(Number(quotePage)) || Number(quotePage) < 1 || (book.totalPages !== undefined && Number(quotePage) > book.totalPages)))) { setError('Введите цитату и корректный номер страницы.'); return }
-    library.addQuote(book.id, { text, page: quotePage === '' ? undefined : Number(quotePage) })
-    setText(''); setQuotePage(''); setError('')
+    if (validPage) { library.updateProgress(book.id, Number(page)); setPage(null); setMessage('Прогресс сохранён.') }
   }
-  return <div className="page book-page">
+  const changeStatus = (status: Book['status']) => { library.updateBook(book.id, { status }); setPage(null); setMessage('Статус сохранён.') }
+  return <div className="page book-page journal-page">
     <a className="back-link" href="/library">← В библиотеку</a>
-    <section className="book-hero"><BookCover src={book.cover} title={book.title} className="detail-cover" />
-      <div className="book-heading"><p className="eyebrow">Дневник чтения</p><StatusBadge status={book.status} /><h1>{book.title}</h1><p className="detail-author">{book.author}</p>
-        <p className="detail-rating" aria-label={book.rating ? `Оценка: ${book.rating} из 5` : 'Без оценки'}>{book.rating ? '★'.repeat(book.rating) + '☆'.repeat(5 - book.rating) : 'Пока без оценки'}</p>
-        <div className="progress-copy"><span>{book.currentPage ?? 0} из {book.totalPages ?? '—'} стр.</span><strong>{book.totalPages ? `${percent}%` : 'Количество страниц не указано'}</strong></div><ProgressBar value={percent} />
-        <div className="reading-dates">{book.startedAt && <p>Начало: {date(book.startedAt)}</p>}{book.finishedAt && <p>Прочитано: {date(book.finishedAt)}</p>}</div>
-        <div className="book-actions"><button className="primary-button" onClick={() => setEditing(true)}>Редактировать книгу</button><label className="status-control">Статус<select aria-label="Статус" value={book.status} onChange={e => { library.updateBook(book.id, { status: e.target.value as Book['status'] }); setPage(null); setMessage('Статус сохранён.') }}><option value="want-to-read">Хочу прочитать</option><option value="reading">Читаю</option><option value="read">Прочитано</option></select></label><button className="text-button" onClick={() => setDeleting(true)}>Удалить книгу</button></div>
-        {book.status === 'reading' && <form className="progress-form" onSubmit={e => { e.preventDefault(); if (validPage) { library.updateProgress(book.id, Number(page)); setMessage('Прогресс сохранён.') } }}><label>Текущая страница<input type="number" min="0" step="1" max={book.totalPages} value={page} onChange={e => setPage(e.target.value)} /></label><button className="secondary-button" disabled={!validPage || Number(page) === (book.currentPage ?? 0)}>Обновить прогресс</button>{!validPage && <p className="form-error">Укажите целое число от 0 до {book.totalPages ?? 'последней страницы'}.</p>}</form>}
-        {book.status === 'reading' && book.totalPages !== undefined && book.currentPage === book.totalPages && <div className="completion"><p>Последняя страница позади. Отметим книгу прочитанной?</p><button className="link-button" onClick={() => { library.updateBook(book.id, { status: 'read' }); setMessage('Книга прочитана! Оценку можно добавить при редактировании.') }}>Отметить прочитанной</button></div>}
-        <p className="save-message" role="status">{message}</p>
-      </div></section>
-    <div className="journal-sections"><section><p className="eyebrow">Личные впечатления</p><h2>Заметки</h2><p className="muted">Что вы запомните об этой книге?</p><label className="sr-only" htmlFor="notes">Заметки</label><textarea id="notes" rows={9} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Впечатления и мысли, к которым хочется вернуться…" /><button className="secondary-button" disabled={notes === (book.notes ?? '')} onClick={() => { library.saveNotes(book.id, notes); setMessage('Заметка сохранена.') }}>Сохранить заметку</button></section>
-      <section><p className="eyebrow">Строки на память</p><h2>Цитаты</h2>{!book.quotes?.length && <p className="quiet-empty">Пока без цитат. Сохраните строку, которая вам откликнулась.</p>}
-        {(book.quotes ?? []).map(quote => <article className="journal-quote" key={quote.id}><blockquote>«{quote.text}»</blockquote><footer><span>{quote.page !== undefined ? `Стр. ${quote.page} · ` : ''}{date(quote.createdAt)}</span><button className="text-button" aria-label={`Удалить цитату: ${quote.text}`} onClick={() => library.deleteQuote(book.id, quote.id)}>Удалить цитату</button></footer></article>)}
-        <form className="quote-form" onSubmit={addQuote}><label htmlFor="quote-text">Новая цитата</label><textarea id="quote-text" rows={4} value={text} onChange={e => setText(e.target.value)} placeholder="Слова, которые хочется сохранить…" required /><label>Страница (необязательно)<input type="number" min="1" step="1" max={book.totalPages} value={quotePage} onChange={e => setQuotePage(e.target.value)} /></label>{error && <p className="form-error" role="alert">{error}</p>}<button className="secondary-button" disabled={!text.trim()}>Сохранить цитату</button></form>
-      </section></div>
+    <section className="book-introduction" aria-labelledby="book-title">
+      <div className="journal-cover"><BookCover src={book.cover} title={book.title} /><p>{book.totalPages ? `${book.totalPages} стр.` : 'Количество страниц не указано'}</p></div>
+      <div className="journal-book-info"><p className="eyebrow">Ваша личная история чтения</p><StatusBadge status={book.status} /><h1 id="book-title">{book.title}</h1><p className="journal-author">{book.author}</p>
+        <div className="journal-rating"><span aria-label={book.rating ? `Оценка: ${book.rating} из 5` : 'Без оценки'} className={book.rating ? 'rated' : ''}>{book.rating ? <><span aria-hidden="true">{'★'.repeat(book.rating)}{'☆'.repeat(5 - book.rating)}</span><span className="rating-description">{book.rating} из 5 · ваша оценка</span></> : 'Пока без оценки'}</span></div>
+        <div className={`book-reading-state is-${book.status}`}>
+          <div className="reading-state-heading"><h2>{book.status === 'read' ? 'Книга прочитана' : book.status === 'reading' ? 'Ваш прогресс' : 'В планах на чтение'}</h2>{(book.status === 'read' || (book.status === 'reading' && book.totalPages !== undefined)) && <strong>{percent}%</strong>}</div>
+          {book.status === 'want-to-read' ? <><p>У этой истории всё ещё впереди. Начните, когда придёт её время.</p><button className="primary-button" onClick={() => changeStatus('reading')}>Начать чтение <span aria-hidden="true">→</span></button></> : <>
+            {(book.totalPages !== undefined || book.currentPage !== undefined) && <p className="journal-page-count">{book.totalPages ? `${book.currentPage ?? 0} из ${book.totalPages} стр.` : `${book.currentPage} стр. прочитано`}</p>}{book.totalPages ? <ProgressBar value={percent} /> : <p className="diary-help">Количество страниц не указано</p>}
+            {book.status === 'reading' && <form className="journal-progress-form" onSubmit={updateProgress}><label htmlFor="current-page">Текущая страница<input id="current-page" type="number" min="0" step="1" max={book.totalPages} value={page} onChange={event => setPage(event.target.value)} aria-invalid={!validPage} aria-describedby={!validPage ? 'page-error' : undefined} /></label><button className="primary-button" disabled={!validPage || Number(page) === (book.currentPage ?? 0)}>Обновить прогресс</button>{!validPage && <p id="page-error" className="form-error">Укажите целое число от 0 до {book.totalPages ?? 'последней страницы'}.</p>}</form>}
+            {book.status === 'reading' && book.totalPages !== undefined && book.currentPage === book.totalPages && <div className="journal-completion"><p>Последняя страница позади. Отметим книгу прочитанной?</p><button className="secondary-button" onClick={() => changeStatus('read')}>Отметить прочитанной</button></div>}
+          </>}
+        </div>
+        {(book.startedAt || book.finishedAt || book.status === 'read') && <dl className="journal-dates">{book.startedAt && <div><dt>Начало чтения</dt><dd><time dateTime={book.startedAt}>{readingDate(book.startedAt)}</time></dd></div>}{book.status === 'read' && <div><dt>Прочитано</dt><dd>{book.finishedAt ? <time dateTime={book.finishedAt}>{readingDate(book.finishedAt)}</time> : 'Дата не указана'}</dd></div>}</dl>}
+        <div className="journal-book-actions"><button className="secondary-button" onClick={() => setEditing(true)}>Редактировать книгу</button><label>Статус<select aria-label="Статус" value={book.status} onChange={event => changeStatus(event.target.value as Book['status'])}><option value="want-to-read">Хочу прочитать</option><option value="reading">Читаю</option><option value="read">Прочитано</option></select></label></div>
+      </div>
+    </section>
+    <p className="journal-save-status" role="status" aria-live="polite">{message}</p>
+    <div className="book-diary"><header className="book-diary-heading"><p className="eyebrow">Между страницами</p><h2>Читательский дневник</h2><p>Не только о том, что прочитано. О том, что осталось с вами.</p></header>
+      <BookNotes notes={book.notes ?? ''} onSave={notes => { library.saveNotes(book.id, notes); setMessage('Заметка сохранена.') }} />
+      <BookQuotes quotes={book.quotes ?? []} totalPages={book.totalPages} onAdd={quote => { library.addQuote(book.id, quote); setMessage('Цитата сохранена.') }} onDelete={id => { library.deleteQuote(book.id, id); setMessage('Цитата удалена.') }} />
+    </div>
+    <footer className="journal-book-footer"><span>Управление книгой</span><button className="text-button" onClick={() => setDeleting(true)}>Удалить книгу</button></footer>
     {editing && <AddBookModal book={book} open onClose={() => setEditing(false)} onAdd={changes => { library.updateBook(book.id, changes); setPage(null); setMessage('Изменения сохранены.') }} />}
-    {deleting && <div className="modal-backdrop" onMouseDown={e => e.target === e.currentTarget && closeDelete()}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><p className="eyebrow">Ваша библиотека</p><h2 id="delete-title">Удалить книгу?</h2><p>Книга «{book.title}», её заметки и цитаты будут удалены. Это действие нельзя отменить.</p><div className="form-actions"><button autoFocus className="secondary-button" onClick={closeDelete}>Оставить книгу</button><button className="destructive-button" onClick={() => { library.deleteBook(book.id); onNavigate('/library') }}>Удалить книгу</button></div></section></div>}
+    {deleting && <div className="modal-backdrop" onMouseDown={event => event.target === event.currentTarget && closeDelete()}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><p className="eyebrow">Ваша библиотека</p><h2 id="delete-title">Удалить книгу?</h2><p>Книга «{book.title}», её заметки и цитаты будут удалены. Это действие нельзя отменить.</p><div className="form-actions"><button autoFocus className="secondary-button" onClick={closeDelete}>Оставить книгу</button><button className="destructive-button" onClick={() => { library.deleteBook(book.id); onNavigate('/library') }}>Удалить книгу</button></div></section></div>}
   </div>
 }
