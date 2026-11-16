@@ -24,7 +24,7 @@ export function BookQuotes({ quotes, totalPages, onAdd, onDelete }: Props) {
     onAdd({ text: text.trim(), page: page === '' ? undefined : Number(page) }); close()
   }
   return <section className="diary-quotes" aria-labelledby="quotes-heading">
-    <div className="diary-section-heading"><div><p className="eyebrow">Строки на память</p><h2 id="quotes-heading">Цитаты</h2></div><button ref={trigger} className="secondary-button" disabled={composing} aria-expanded={composing} aria-controls="quote-composer" onClick={() => setComposing(true)}>Добавить цитату <span aria-hidden="true">＋</span></button></div>
+    <div className="diary-section-heading"><div><p className="eyebrow">Строки на память</p><h2 id="quotes-heading">Цитаты</h2></div><button ref={trigger} className="secondary-button" disabled={composing} aria-expanded={composing} aria-controls="quote-composer" onClick={() => setComposing(true)}><span aria-hidden="true">＋</span> Добавить цитату</button></div>
     <p className="diary-section-intro">Слова из этой книги, которые хочется оставить с собой.</p>
     {quotes.length ? <div className="diary-quote-list" aria-label={quoteCount(quotes.length)}>{[...quotes].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map(quote => <QuoteEntry key={quote.id} quote={quote} onDelete={() => setPendingDelete(quote.id)} />)}</div> : <p className="diary-empty-copy">Пока здесь нет сохранённых цитат.</p>}
     <div id="quote-composer">{composing && <form className="diary-editor quote-composer" onSubmit={submit}>
