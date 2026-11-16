@@ -45,7 +45,7 @@
 .book-diary-heading .eyebrow { margin: 0 0 12px; }
 .book-diary-heading h2 { font: 400 32px/1.3 var(--font-display); margin: 0 0 12px; }
 .book-diary-heading > p:last-child { color: var(--muted); margin-bottom: 0; }
-.diary-notes, .diary-quotes { max-width: 900px; margin-left: auto; margin-right: auto; }
+.diary-notes, .diary-quotes { max-width: 900px; margin-left: 0; margin-right: auto; }
 .diary-notes { margin-bottom: 48px; }
 .diary-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .diary-section-heading .eyebrow { margin-bottom: 8px; color: var(--muted); }
@@ -79,8 +79,9 @@
 .diary-quote-source strong { font: 700 16px/1.5 var(--font-display); display: block; overflow-wrap: anywhere; }
 .diary-quote-source > span:first-child { min-width: 0; }
 .diary-quote-source > span > span { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; overflow-wrap: anywhere; }
-.diary-quote-source:hover strong { text-decoration: underline; text-underline-offset: 4px; }
-.journal-book-footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 13px; color: var(--muted); }
+.diary-quote-source:is(:hover, :focus-visible) strong { text-decoration: underline; text-underline-offset: 4px; }
+.quote-open-book { flex-shrink: 0; white-space: nowrap; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.journal-book-footer { max-width: 900px; margin: 36px auto 0 0; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 13px; color: var(--muted); }
 .journal-book-footer .text-button { padding: 12px 0; min-height: 44px; font-size: 13px; }
 .collection-heading { display: flex; align-items: center; justify-content: space-between; gap: 32px; margin-bottom: 48px; }
 .collection-heading h1 { font: 400 44px/1.15 var(--font-display); letter-spacing: -.025em; margin: 8px 0 16px; }

@@ -6,7 +6,7 @@ export function QuoteEntry({ quote, book, onDelete }: Props) {
   return <article className="diary-quote">
     <blockquote>«{quote.text}»</blockquote>
     {book && <a className="diary-quote-source" href={`/book/${book.id}`}>
-      <span><strong>{book.title}</strong><span>{book.author}</span></span><span aria-hidden="true">→</span>
+      <span><strong>{book.title}</strong><span>{book.author}</span></span><span className="quote-open-book">Открыть книгу →</span>
     </a>}
     <footer>
       <div className="quote-metadata">{quote.page !== undefined && <span>Стр. {quote.page}</span>}<time dateTime={quote.createdAt}>{readingDate(quote.createdAt)}</time></div>
