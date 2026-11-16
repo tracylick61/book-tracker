@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { isDuplicateBook } from '../data/bookIdentity'
 import { normalizeBookProgress } from '../data/bookProgress'
 import { loadBooks, saveBooks } from '../data/libraryStorage'
 import type { Book, NewBook, Quote } from '../types/book'
@@ -19,8 +20,10 @@ export function useLibrary() {
     return next
   }))
   const addBook = (book: NewBook) => {
+    if (isDuplicateBook(books, book)) return false
     const entry = { ...book, id: crypto.randomUUID(), quotes: [], notes: '' }
-    commit(current => [entry, ...current])
+    commit(current => isDuplicateBook(current, entry) ? current : [entry, ...current])
+    return true
   }
   const deleteBook = (id: string) => commit(current => current.filter(book => book.id !== id))
   const updateProgress = (id: string, page: number) => {

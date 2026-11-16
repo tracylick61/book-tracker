@@ -43,6 +43,7 @@ function App() {
       {isAdding && <AddBookModal
         open={isAdding}
         onClose={() => setIsAdding(false)}
+        books={books}
         onAdd={addBook}
       />}
     </div>
