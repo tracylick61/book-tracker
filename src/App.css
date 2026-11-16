@@ -17,8 +17,9 @@ h1 { font: 400 48px/1.12 var(--font-display); letter-spacing: -.035em; margin-bo
 .page-intro > p:last-child, .library-header > div > p:last-child { color: var(--muted); font-size: 15px; }
 .section-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 13px; margin-bottom: 22px; }
 .section-header h2 { font: 700 18px var(--font-display); margin: 0; }
-.primary-button { border: 0; border-radius: var(--radius-sm); padding: 12px 19px; background: var(--accent); color: white; font-weight: 600; font-size: 13px; }
-.primary-button:hover { background: var(--accent-dark); }
+.primary-button { min-height: 44px; border: 0; border-radius: var(--radius-sm); padding: 12px 20px; background: var(--accent); color: var(--white); font-weight: 600; font-size: 13px; line-height: 1.5; }
+.primary-button:not(.header-add), .secondary-button, .destructive-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; vertical-align: middle; text-decoration: none; }
+.primary-button:not(:disabled):is(:hover, :active) { background: var(--accent-dark); }
 .current-section, .home-page > section { margin-bottom: 55px; }
 .current-reading { background: var(--white); border: 1px solid var(--line); display: grid; grid-template-columns: 185px 1fr 28%; gap: 42px; padding: 27px; align-items: center; border-radius: var(--radius-md); }
 .book-cover { aspect-ratio: 2 / 3; background: #ded6cb; overflow: hidden; border-radius: 3px 6px 6px 3px; box-shadow: 0 9px 22px rgba(47,36,29,.13); }
@@ -92,8 +93,11 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .progress-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 24px; }
 .progress-form label, .quote-form label { display: grid; gap: 8px; font-size: 12px; color: var(--muted); }
 .progress-form input, .quote-form input { width: 110px; }
-.secondary-button { padding: 10px 16px; border: 1px solid var(--line); border-radius: 5px; color: var(--accent); background: var(--white); font-size: 12px; }
-.secondary-button:hover { background: var(--paper-deep); }
+.secondary-button, .destructive-button { min-height: 44px; padding: 12px 20px; border: 1px solid var(--control-border); border-radius: var(--radius-sm); color: var(--accent); background: var(--white); font-size: 12px; line-height: 1.5; }
+.secondary-button:not(:disabled):hover { background: var(--paper); }
+.secondary-button:not(:disabled):active { background: var(--accent-soft); }
+.destructive-button { color: var(--danger); border-color: var(--danger); }
+.destructive-button:not(:disabled):is(:hover, :active) { background: var(--danger-soft); }
 .completion { margin-top: 20px; padding: 16px; background: var(--paper-deep); font-size: 13px; }
 .save-message { min-height: 16px; color: #52664d; font-size: 12px; margin-top: 16px; }
 .journal-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; border-top: 1px solid var(--line); padding-top: 36px; }
@@ -117,3 +121,14 @@ textarea { width: 100%; resize: vertical; padding: 15px; border: 1px solid var(-
   .search input { width: 160px; }
   .quotes-search input { width: 100%; }
 }
+
+/* Interaction polish: visible keyboard focus without changing control geometry. */
+.primary-button:focus-visible, .secondary-button:focus-visible, .destructive-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.primary-button:disabled, .secondary-button:disabled, .destructive-button:disabled { opacity: 1; color: var(--muted); background: var(--paper-deep); border-color: var(--line); cursor: not-allowed; }
+.secondary-button:disabled:hover { background: var(--paper-deep); }
+.link-button:not(:disabled):is(:hover, :focus-visible), .back-link:focus-visible, .quote-source:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.close-button:hover, .close-button:focus-visible { color: var(--accent-dark); background: var(--accent-soft); }
+.quotes-page .search:focus-within { outline: 2px solid var(--accent); outline-offset: 4px; }
+/* Keep the existing line slot and use bottom padding for a 24–32px visual gap. */
+.quotes-empty-cta { position: relative; top: var(--space-3); border-color: var(--accent); margin-block: -12px; }
+.quotes-empty-cta:not(:disabled):hover { background: var(--accent-soft); }

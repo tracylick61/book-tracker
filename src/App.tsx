@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import './reader.css'
 import { AddBookModal } from './components/AddBookModal'
-import { Sidebar } from './components/Sidebar'
+import { Header } from './components/Header'
 import { useLibrary } from './hooks/useLibrary'
 import { BookDetail } from './pages/BookDetail'
 import { Quotes } from './pages/Quotes'
@@ -31,12 +32,12 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar path={path} onNavigate={navigate} onAdd={() => setIsAdding(true)} />
+      <Header path={path} onNavigate={navigate} onAdd={() => setIsAdding(true)} />
       <main className="main-content">
-        {path.startsWith('/book/') ? (book ? <BookDetail key={book.id} book={book} library={library} onNavigate={navigate} /> : <div className="page"><div className="empty-state"><h1>Book not found</h1><p>This book may have been removed from your library.</p><a href="/library" className="quote-source">← Back to Library</a></div></div>) : path === '/quotes' ? <Quotes books={books} /> : path === '/library' ? (
+        {path.startsWith('/book/') ? (book ? <BookDetail key={book.id} book={book} library={library} onNavigate={navigate} /> : <div className="page"><div className="empty-state"><h1>Книга не найдена</h1><p>Возможно, эта книга уже удалена из библиотеки.</p><a href="/library" className="quote-source">← В библиотеку</a></div></div>) : path === '/quotes' ? <Quotes books={books} /> : path === '/library' ? (
           <Library books={books} onAdd={() => setIsAdding(true)} />
         ) : (
-          <Home books={books} onNavigate={navigate} />
+          <Home books={books} onNavigate={navigate} onAdd={() => setIsAdding(true)} />
         )}
       </main>
       {isAdding && <AddBookModal

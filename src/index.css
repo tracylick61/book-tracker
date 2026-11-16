@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Text:wght@400;700&display=swap');
+@font-face {
+  font-family: 'Onest';
+  src: url('./assets/fonts/Onest-Variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 :root {
-  font-family: 'DM Sans', sans-serif;
+  --font-ui: 'Onest', Arial, sans-serif;
+  font-family: var(--font-ui);
   color: #201c1a;
   background: #f5f0e8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --font-display: 'Libre Caslon Text', Georgia, serif;
+  --font-display: Georgia, 'Times New Roman', serif;
   --ink: #201c1a;
   --muted: #756d67;
   --paper: #f5f0e8;
@@ -29,3 +36,15 @@ body { margin: 0; min-width: 1000px; min-height: 100vh; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 h1, h2, h3, p, blockquote { margin-top: 0; }
+
+:root {
+  --accent-soft: #ebddd5;
+  --secondary: #e99a62;
+  --secondary-soft: #f7e4d4;
+  --success: #52664d;
+  --success-soft: #e6ebe1;
+  --control-border: #94877b;
+  --danger: #a12d27;
+  --danger-dark: #7d221e;
+  --danger-soft: #f6e6e2;
+}
