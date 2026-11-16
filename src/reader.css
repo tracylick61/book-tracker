@@ -72,8 +72,12 @@
 .reader-actions { padding: 24px 0; }
 .reader-actions h2 { font: 400 26px/1.35 var(--font-display); margin: 16px 0; }
 .reader-actions > p:not(.eyebrow) { color: var(--muted); font-size: 14px; }
-.reader-actions > button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 16px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; font-size: 15px; color: var(--accent); }
-.reader-actions > button:hover { color: var(--accent-dark); background: var(--white); }
+.reader-actions > button { position: relative; isolation: isolate; display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 16px 20px; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; font-size: 15px; color: var(--accent); }
+.reader-actions > button::before { content: ''; position: absolute; inset: 4px 8px; border-radius: var(--radius-sm); z-index: -1; pointer-events: none; }
+.reader-actions > button:is(:hover, :focus-visible) { color: var(--accent-dark); }
+.reader-actions > button:is(:hover, :focus-visible)::before { background: var(--white); }
+.reader-actions > button:focus-visible { outline: none; }
+.reader-actions > button:focus-visible::before { outline: 2px solid var(--accent); outline-offset: 3px; }
 .reader-actions small { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
 .shelf-total { color: var(--muted); font-size: 13px; white-space: nowrap; }
 .reader-library-tools { display: flex; gap: 24px; margin-bottom: 32px; }
