@@ -2,6 +2,9 @@
 .site-header { background: var(--white); border-bottom: 1px solid var(--line); }
 .header-inner { max-width: 1260px; min-height: 100px; padding: 20px 58px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
 .site-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font: 700 21px/1.2 var(--font-display); }
+.site-brand { cursor: pointer; border-radius: var(--radius-sm); }
+.site-brand:hover { color: var(--accent-dark); text-decoration: underline; text-underline-offset: 4px; }
+.site-header nav a.active[href="/"] { font-weight: 600; box-shadow: inset 0 -1px 0 var(--accent); }
 .site-brand svg, .site-brand em { color: var(--accent); font-style: normal; }
 .site-brand small { display: block; color: var(--muted); font: 12px/1.5 var(--font-ui); margin-top: 4px; }
 .site-header nav { display: flex; gap: 8px; }
