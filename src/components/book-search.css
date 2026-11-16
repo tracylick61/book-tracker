@@ -41,3 +41,14 @@
 @media (max-width: 1150px) {
   .book-search-modal { padding: 32px; }
 }
+@media (max-width: 480px) {
+  .book-search-modal { width: 100%; padding: 24px; }
+  .book-search-modal .modal-heading { gap: 16px; }
+  .catalogue-search > div { flex-direction: column; }
+  .catalogue-result { grid-template-columns: 48px minmax(0, 1fr) 12px; gap: 12px; padding: 16px 4px; }
+  .catalogue-result .book-cover { width: 48px; }
+  .catalogue-confirm { grid-template-columns: 80px minmax(0, 1fr); gap: 16px; }
+  .catalogue-confirm .book-cover { width: 80px; }
+  .catalogue-confirm > div { min-width: 0; }
+  .catalogue-empty { padding: 20px 12px; }
+}

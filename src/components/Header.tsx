@@ -6,6 +6,6 @@ export function Header({ path, onNavigate, onAdd }: HeaderProps) {
       const active = path === item.to || (item.to === '/library' && path.startsWith('/book/'))
       return <a key={item.to} href={item.to} aria-current={active ? 'page' : undefined} className={active ? 'active' : ''} onClick={event => { if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return; event.preventDefault(); onNavigate(item.to) }}>{item.label}</a>
     })}</nav>
-    <button className="primary-button header-add" onClick={onAdd}><span aria-hidden="true">＋</span> Добавить книгу</button>
+    <button className="primary-button header-add" aria-label="Добавить книгу" onClick={onAdd}><span aria-hidden="true">＋</span> <span className="header-add-label">Добавить книгу</span><span className="header-add-compact">Книга</span></button>
   </div></header>
 }
