@@ -53,3 +53,23 @@ test('search limits fields/results and frequency; recognizes ISBN; handles error
   mock.mock.mockImplementation(async () => new Response(JSON.stringify({ wrong: [] })))
   await assert.rejects(searchBooks('invalid', signal), /Invalid catalogue response/)
 })
+
+test('title matches are promoted stably without filtering or reranking ISBN results', async () => {
+  const { rankSearchResults } = await import('../src/api/openLibrary.ts')
+  const results = ['Other', 'A book about Dune', 'Dune: a sequel', ' DUNE! ', 'Unrelated'].map((title, i) => ({ id: String(i), title, author: 'Author', cover: '' }))
+  assert.deepEqual(rankSearchResults(results, 'dune').map(book => book.id), ['3', '2', '1', '0', '4'])
+  assert.equal(rankSearchResults(results, 'dune').length, results.length)
+  assert.deepEqual(rankSearchResults(results, '978-0-441-17271-9'), results)
+  assert.deepEqual(rankSearchResults(results, 'isbn:9780441172719'), results)
+  assert.deepEqual(results.map(book => book.id), ['0', '1', '2', '3', '4'])
+})
+
+test('publication metadata separates work and edition years without duplicate years', async () => {
+  const { publicationLabels } = await import('../src/lib/catalogueMetadata.ts')
+  assert.deepEqual(publicationLabels({ year: 1966, publishDate: '2009' }), ['Впервые опубликовано: 1966', 'Издание: 2009'])
+  assert.deepEqual(publicationLabels({ year: 1966, publishDate: '1966' }), ['Впервые опубликовано: 1966'])
+  assert.deepEqual(publicationLabels({ year: 1966, publishDate: 'May 1966' }), ['Впервые опубликовано: 1966'])
+  assert.deepEqual(publicationLabels({ year: 1966 }), ['Впервые опубликовано: 1966'])
+  assert.deepEqual(publicationLabels({ publishDate: '2009' }), ['Издание: 2009'])
+  assert.deepEqual(publicationLabels({}), [])
+})

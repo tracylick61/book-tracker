@@ -3,13 +3,14 @@ import { useDialog } from '../hooks/useDialog'
 import { useBookSearch } from '../hooks/useBookSearch'
 import type { Book, NewBook } from '../types/book'
 import type { BookSearchResult } from '../api/openLibrary'
+import { publicationLabels } from '../lib/catalogueMetadata'
 import { BookCover } from './BookCover'
 import { BookForm } from './BookForm'
 import './book-search.css'
 
 interface Props { open: boolean; onClose: () => void; onAdd: (book: NewBook) => boolean | void; book?: Book; books?: Book[] }
-function CatalogueDetails({ result }: { result: BookSearchResult }) {
-  const metadata = [result.year ? `${result.year} г.` : '', result.publisher, result.totalPages ? `${result.totalPages} стр.` : ''].filter(Boolean)
+function CatalogueDetails({ result, showYear = true }: { result: BookSearchResult; showYear?: boolean }) {
+  const metadata = [showYear && result.year ? `${result.year} г.` : '', result.publisher, result.totalPages ? `${result.totalPages} стр.` : ''].filter(Boolean)
   return <><strong>{result.title}</strong>{result.author && <span className="catalogue-author">{result.author}</span>}{metadata.length > 0 && <span className="catalogue-meta">{metadata.join(' · ')}</span>}</>
 }
 export function AddBookModal({ open, onClose, onAdd, book, books = [] }: Props) {
@@ -39,7 +40,7 @@ export function AddBookModal({ open, onClose, onAdd, book, books = [] }: Props) 
         <footer className="catalogue-footer"><span>Не нашли книгу?</span><button className="text-button" onClick={() => setMode('manual')}>Добавить книгу вручную</button></footer>
       </> : <>
         {!book && <button className="link-button catalogue-back" onClick={backToSearch}>{mode === 'confirm' ? '← Назад к результатам' : '← Вернуться к поиску'}</button>}
-        {mode === 'confirm' && selected && <div className="catalogue-confirm"><BookCover src={selected.cover} title={selected.title} /><div><CatalogueDetails result={selected} />{selected.publishDate && <p className="catalogue-meta">Публикация: {selected.publishDate}</p>}{selected.isbn && <p className="catalogue-meta">ISBN: {selected.isbn}</p>}</div></div>}
+        {mode === 'confirm' && selected && <div className="catalogue-confirm"><BookCover src={selected.cover} title={selected.title} /><div><CatalogueDetails result={selected} showYear={false} />{publicationLabels(selected).map(label => <p key={label} className="catalogue-meta">{label}</p>)}{selected.isbn && <p className="catalogue-meta">ISBN: {selected.isbn}</p>}</div></div>}
         <BookForm key={mode === 'confirm' ? selected?.id : book?.id ?? 'manual'} book={book} selected={mode === 'confirm' ? selected ?? undefined : undefined} books={books} onSave={onAdd} onDone={onClose} onCancel={onClose} />
       </>}
     </section>

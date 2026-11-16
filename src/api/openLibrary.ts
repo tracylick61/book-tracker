@@ -69,6 +69,25 @@ export function mapSearchResult(work: OpenLibraryWork): BookSearchResult | undef
   }
 }
 
+const isIsbnQuery = (query: string) => /^(?:isbn:)?(?:\d{9}[\dXx]|\d{13})$/i.test(query.replace(/[\s-]/g, ''))
+const normalizeTitle = (value: string) => value.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+export function rankSearchResults(books: BookSearchResult[], query: string): BookSearchResult[] {
+  if (isIsbnQuery(query)) return [...books]
+  const term = normalizeTitle(query)
+  if (!term) return [...books]
+  const words = term.split(' ')
+  const rank = (book: BookSearchResult) => {
+    const title = normalizeTitle(book.title)
+    if (title === term) return 0
+    if (title.startsWith(term)) return 1
+    if (title.includes(term) || words.every(word => title.split(' ').includes(word))) return 2
+    return 3
+  }
+  // Only promote title matches; retain the API order within each group and keep every result.
+  return books.map((book, index) => ({ book, index, rank: rank(book) }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index).map(({ book }) => book)
+}
+
 let lastStartedAt = 0
 let startQueue: Promise<void> = Promise.resolve()
 const wait = (milliseconds: number, signal: AbortSignal) => new Promise<void>((resolve, reject) => {
@@ -99,7 +118,7 @@ export async function searchBooks(query: string, signal: AbortSignal): Promise<B
   const term = query.trim()
   if (term.length < 3) return []
   const isbn = term.replace(/[\s-]/g, '')
-  const q = /^(?:\d{9}[\dXx]|\d{13})$/.test(isbn) ? `isbn:${isbn.toUpperCase()}` : term
+  const q = isIsbnQuery(isbn) ? `isbn:${isbn.replace(/^isbn:/i, '').toUpperCase()}` : term
   const params = new URLSearchParams({ q, limit: '10', fields })
   const response = await fetchCatalogue(`https://openlibrary.org/search.json?${params}`, signal)
   if (!response.ok) throw new Error('Catalogue unavailable')
@@ -107,9 +126,10 @@ export async function searchBooks(query: string, signal: AbortSignal): Promise<B
   if (!data || !Array.isArray(data.docs)) throw new Error('Invalid catalogue response')
   signal.throwIfAborted()
   const seen = new Set<string>()
-  return data.docs.map(mapSearchResult).filter((book): book is BookSearchResult => {
+  const books = data.docs.map(mapSearchResult).filter((book): book is BookSearchResult => {
     if (!book || seen.has(book.id)) return false
     seen.add(book.id)
     return true
-  }).slice(0, 10)
+  })
+  return rankSearchResults(books, term).slice(0, 10)
 }
