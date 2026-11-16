@@ -50,8 +50,8 @@ export function BookDetail({ book, library, onNavigate }: Props) {
       <BookNotes notes={book.notes ?? ''} onSave={notes => { library.saveNotes(book.id, notes); setMessage('Заметка сохранена.') }} />
       <BookQuotes quotes={book.quotes ?? []} totalPages={book.totalPages} onAdd={quote => { library.addQuote(book.id, quote); setMessage('Цитата сохранена.') }} onDelete={id => { library.deleteQuote(book.id, id); setMessage('Цитата удалена.') }} />
     </div>
-    <footer className="journal-book-footer"><span>Управление книгой</span><button className="text-button" onClick={() => setDeleting(true)}>Удалить книгу</button></footer>
-    {editing && <AddBookModal book={book} open onClose={() => setEditing(false)} onAdd={changes => { library.updateBook(book.id, changes); setPage(null); setMessage('Изменения сохранены.') }} />}
+    <footer className="journal-book-footer"><button className="text-button" onClick={() => setDeleting(true)}>Удалить книгу</button></footer>
+    {editing && <AddBookModal book={book} books={library.books} open onClose={() => setEditing(false)} onAdd={changes => { library.updateBook(book.id, changes); setPage(null); setMessage('Изменения сохранены.') }} />}
     {deleting && <div className="modal-backdrop" onMouseDown={event => event.target === event.currentTarget && closeDelete()}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><p className="eyebrow">Ваша библиотека</p><h2 id="delete-title">Удалить книгу?</h2><p>Книга «{book.title}», её заметки и цитаты будут удалены. Это действие нельзя отменить.</p><div className="form-actions"><button autoFocus className="secondary-button" onClick={closeDelete}>Оставить книгу</button><button className="destructive-button" onClick={() => { library.deleteBook(book.id); onNavigate('/library') }}>Удалить книгу</button></div></section></div>}
   </div>
 }
