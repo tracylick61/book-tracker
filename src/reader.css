@@ -181,7 +181,7 @@
   .stage-one { padding: 24px 16px 40px; }
   .stage-one h1 { font-size: 34px; }
   .reading-feature { padding: 20px; }
-  .feature-cover { width: 160px; }
+  .feature-cover { width: 150px; }
   .feature-progress .progress-copy { flex-wrap: wrap; gap: 8px 16px; }
   .reading-summary { gap: 12px 24px; }
   .stage-one .section-header { flex-wrap: wrap; gap: 8px 16px; margin-bottom: 16px; }
@@ -192,8 +192,8 @@
   .reader-recent blockquote { font-size: 22px; }
   .reader-actions { padding: 16px 0; }
   .reader-actions > button::before { left: -4px; right: 0; }
-  .reader-filters { gap: 8px; }
-  .reader-filters button { padding: 8px 12px; gap: 8px; }
+  .reader-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .reader-filters button { padding: 8px 12px; gap: 8px; justify-content: space-between; }
   .stage-one .empty-state { padding: 24px 16px; }
 }
 
