@@ -1,7 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { useCallback, useState, type FormEvent } from 'react'
 import type { Book } from '../types/book'
 import type { useLibrary } from '../hooks/useLibrary'
-import { useDialog } from '../hooks/useDialog'
+import { DeleteConfirmation } from '../components/DeleteConfirmation'
 import { BookCover } from '../components/BookCover'
 import { StatusBadge } from '../components/StatusBadge'
 import { ProgressBar } from '../components/ProgressBar'
@@ -18,8 +18,7 @@ export function BookDetail({ book, library, onNavigate }: Props) {
   const [pageDraft, setPage] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const page = pageDraft ?? String(book.currentPage ?? 0)
-  const closeDelete = () => setDeleting(false)
-  useDialog(deleting, closeDelete)
+  const closeDelete = useCallback(() => setDeleting(false), [])
   const percent = book.status === 'read' ? 100 : book.totalPages ? Math.round((book.currentPage ?? 0) / book.totalPages * 100) : 0
   const validPage = page.trim() !== '' && Number.isInteger(Number(page)) && Number(page) >= 0 && (book.totalPages === undefined || Number(page) <= book.totalPages)
   const updateProgress = (event: FormEvent) => {
@@ -47,11 +46,12 @@ export function BookDetail({ book, library, onNavigate }: Props) {
     </section>
     <p className="journal-save-status" role="status" aria-live="polite">{message}</p>
     <div className="book-diary"><header className="book-diary-heading"><p className="eyebrow">Между страницами</p><h2>Читательский дневник</h2><p>Не только о том, что прочитано. О том, что осталось с вами.</p></header>
-      <BookNotes notes={book.notes ?? ''} onSave={notes => { library.saveNotes(book.id, notes); setMessage('Заметка сохранена.') }} />
+      <BookNotes notes={book.notes ?? ''} onSave={notes => { library.saveNotes(book.id, notes); setMessage(notes.trim() ? 'Заметка сохранена.' : 'Заметка удалена.') }} />
+      <div className="diary-section-break" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 7C10 4 6 4 3 5v17c4-1 7-1 11 2 4-3 7-3 11-2V5c-3-1-7-1-11 2Zm0 0v17" /></svg></div>
       <BookQuotes quotes={book.quotes ?? []} totalPages={book.totalPages} onAdd={quote => { library.addQuote(book.id, quote); setMessage('Цитата сохранена.') }} onDelete={id => { library.deleteQuote(book.id, id); setMessage('Цитата удалена.') }} />
     </div>
-    <footer className="journal-book-footer"><button className="text-button" onClick={() => setDeleting(true)}>Удалить книгу</button></footer>
+    <footer className="journal-book-footer"><button className="text-button" onClick={() => setDeleting(true)}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7" /></svg>Удалить книгу</button><p>Книга будет удалена из вашей библиотеки вместе со всеми заметками и цитатами.</p></footer>
     {editing && <AddBookModal book={book} books={library.books} open onClose={() => setEditing(false)} onAdd={changes => { library.updateBook(book.id, changes); setPage(null); setMessage('Изменения сохранены.') }} />}
-    {deleting && <div className="modal-backdrop" onMouseDown={event => event.target === event.currentTarget && closeDelete()}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><p className="eyebrow">Ваша библиотека</p><h2 id="delete-title">Удалить книгу?</h2><p>Книга «{book.title}», её заметки и цитаты будут удалены. Это действие нельзя отменить.</p><div className="form-actions"><button autoFocus className="secondary-button" onClick={closeDelete}>Оставить книгу</button><button className="destructive-button" onClick={() => { library.deleteBook(book.id); onNavigate('/library') }}>Удалить книгу</button></div></section></div>}
+    {deleting && <DeleteConfirmation title="Удалить книгу?" eyebrow="Ваша библиотека" description={`Книга «${book.title}», её заметки и цитаты будут удалены. Это действие нельзя отменить.`} keepLabel="Оставить книгу" deleteLabel="Удалить книгу" onCancel={closeDelete} onConfirm={() => { library.deleteBook(book.id); onNavigate('/library') }} />}
   </div>
 }

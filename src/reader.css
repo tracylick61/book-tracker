@@ -2,6 +2,9 @@
 .site-header { background: var(--white); border-bottom: 1px solid var(--line); }
 .header-inner { max-width: 1260px; min-height: 100px; padding: 20px 58px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
 .site-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font: 700 21px/1.2 var(--font-display); }
+.site-brand { cursor: pointer; border-radius: var(--radius-sm); }
+.site-brand:hover { color: var(--accent-dark); text-decoration: underline; text-underline-offset: 4px; }
+.site-header nav a.active[href="/"] { font-weight: 600; box-shadow: inset 0 -1px 0 var(--accent); }
 .site-brand svg, .site-brand em { color: var(--accent); font-style: normal; }
 .site-brand small { display: block; color: var(--muted); font: 12px/1.5 var(--font-ui); margin-top: 4px; }
 .site-header nav { display: flex; gap: 8px; }
@@ -9,6 +12,7 @@
 .site-header nav a:hover { color: var(--accent); background: var(--paper); }
 .site-header nav a.active { color: var(--accent-dark); background: var(--accent-soft); border-bottom-color: var(--accent); }
 .site-header .primary-button { min-height: 44px; padding: 12px 19px; font-size: 14px; line-height: normal; white-space: nowrap; }
+.header-add-compact { display: none; }
 .main-content { margin-left: 0; }
 .stage-one { padding: 48px 58px 64px; font-size: 16px; line-height: 1.6; }
 .stage-one h1 { font-size: 44px; line-height: 1.15; margin: 8px 0 16px; letter-spacing: -.025em; }
@@ -115,6 +119,85 @@
   .reader-bottom { gap: 32px; }
 }
 
+@media (max-width: 1050px) {
+  .header-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'brand add' 'navigation navigation'; gap: 16px 24px; }
+  .site-brand { grid-area: brand; min-width: 0; justify-self: start; }
+  .site-brand > span { min-width: 0; overflow-wrap: anywhere; }
+  .site-brand svg { flex-shrink: 0; }
+  .site-header .header-add { grid-area: add; justify-self: end; }
+  .site-header nav { grid-area: navigation; flex-wrap: wrap; }
+  .reader-welcome, .reader-library-header { flex-wrap: wrap; gap: 16px 24px; }
+  .reader-welcome > div, .reader-library-header > div { min-width: 0; }
+  .stage-one h1 { overflow-wrap: anywhere; }
+  .reading-feature { grid-template-columns: 160px minmax(0, 1fr); }
+  .feature-details { min-width: 0; }
+  .feature-author { overflow-wrap: anywhere; }
+  .feature-aside { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 24px; border-left: 0; border-top: 1px solid var(--line); padding: 24px 0 0; }
+  .feature-aside .feature-journal-label { grid-column: 1 / -1; margin-bottom: 0; }
+  .feature-aside > p { margin-bottom: 0; }
+  .reading-summary { flex-wrap: wrap; gap: 16px 32px; }
+  .stage-one .home-books { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .reader-bottom { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .reader-bottom > section, .reader-search { min-width: 0; }
+  .reader-recent .quote-source, .reader-actions > button > span:first-child { overflow-wrap: anywhere; }
+  .reader-actions > button > span:first-child { min-width: 0; }
+  .reader-filters { flex-wrap: wrap; }
+}
+
 /* Warm accents mark the personal journal sections; CTA and navigation stay burgundy. */
 .reader-recent .eyebrow { border-left: 3px solid var(--secondary); padding-left: 12px; }
 .reader-actions > .eyebrow { border-left: 3px solid var(--secondary); padding-left: 12px; }
+
+@media (max-width: 768px) {
+  .header-inner { padding: 16px 24px; gap: 16px; }
+  .site-brand { min-height: 44px; }
+  .site-header nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+  .stage-one { padding: 32px 24px 48px; }
+  .reader-welcome { flex-direction: column; align-items: flex-start; margin-bottom: 32px; }
+  .reader-welcome time { max-width: none; text-align: left; }
+  .section-label { flex-wrap: wrap; gap: 8px 16px; }
+  .reading-feature { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .feature-cover { width: 176px; max-width: 100%; }
+  .feature-progress, .feature-hint { max-width: none; }
+  .feature-aside { grid-template-columns: minmax(0, 1fr); }
+  .feature-aside .link-button { justify-self: start; }
+  .stage-one .home-books { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stage-one .library-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 24px; }
+  .stage-one .book-card p, .stage-one .status-badge { overflow-wrap: anywhere; }
+  .reader-bottom { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 24px; }
+  .reader-library-header { margin-bottom: 32px; }
+  .reader-library-tools { flex-direction: column; gap: 16px; }
+  .reader-library-tools > .secondary-button { align-self: flex-start; }
+  .reader-search { flex: auto; width: 100%; }
+  .reader-search button { min-width: 44px; min-height: 44px; }
+  .reader-results { flex-wrap: wrap; gap: 8px 16px; }
+}
+
+@media (max-width: 480px) {
+  .header-inner { padding: 16px; gap: 12px; }
+  .site-header .header-add { padding: 12px; }
+  .site-header nav { flex-wrap: nowrap; gap: 4px; }
+  .site-header nav a { flex: 1; min-width: 0; padding: 12px 8px; }
+  .stage-one { padding: 24px 16px 40px; }
+  .stage-one h1 { font-size: 34px; }
+  .reading-feature { padding: 20px; }
+  .feature-cover { width: 150px; }
+  .feature-progress .progress-copy { flex-wrap: wrap; gap: 8px 16px; }
+  .reading-summary { gap: 12px 24px; }
+  .stage-one .section-header { flex-wrap: wrap; gap: 8px 16px; margin-bottom: 16px; }
+  .stage-one .section-header h2 { font-size: 26px; }
+  .stage-one .home-books, .stage-one .library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .home-page .personal-shelf { margin-bottom: 32px; }
+  .reader-recent { padding: 20px; }
+  .reader-recent blockquote { font-size: 22px; }
+  .reader-actions { padding: 16px 0; }
+  .reader-actions > button::before { left: -4px; right: 0; }
+  .reader-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .reader-filters button { padding: 8px 12px; gap: 8px; justify-content: space-between; }
+  .stage-one .empty-state { padding: 24px 16px; }
+}
+
+@media (max-width: 390px) {
+  .header-add-label { display: none; }
+  .header-add-compact { display: inline; }
+}

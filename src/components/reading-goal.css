@@ -13,3 +13,18 @@
 @media (max-width: 1150px) {
   .home-page > .reading-goal { padding: 24px; gap: 24px; }
 }
+@media (max-width: 1050px) {
+  .home-page > .reading-goal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reading-goal > .link-button { grid-column: 1 / -1; justify-self: start; }
+  .reading-goal-copy, .reading-goal-progress { min-width: 0; }
+  .reading-goal-progress > div:first-child { flex-wrap: wrap; gap: 8px 16px; }
+}
+@media (max-width: 768px) {
+  .home-page > .reading-goal { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-bottom: 32px; }
+  .reading-goal-editor { gap: 16px; }
+  .reading-goal-editor label { min-width: 0; max-width: 100%; }
+  .reading-goal-editor input { max-width: 100%; font-size: 16px; }
+}
+@media (max-width: 480px) {
+  .home-page > .reading-goal { padding: 20px; }
+}

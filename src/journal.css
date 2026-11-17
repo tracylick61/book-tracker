@@ -46,14 +46,19 @@
 .book-diary-heading h2 { font: 400 32px/1.3 var(--font-display); margin: 0 0 12px; }
 .book-diary-heading > p:last-child { color: var(--muted); margin-bottom: 0; }
 .diary-notes, .diary-quotes { max-width: 900px; margin-left: 0; margin-right: auto; }
-.diary-notes { margin-bottom: 48px; }
+.diary-section-break { max-width: 900px; display: flex; align-items: center; gap: 24px; margin: 56px 0; color: var(--muted); }
+.diary-section-break::before, .diary-section-break::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
+.diary-section-break svg { flex-shrink: 0; }
 .diary-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .diary-section-heading .eyebrow { margin-bottom: 8px; color: var(--muted); }
 .diary-section-heading h2 { font: 400 28px/1.3 var(--font-display); margin: 0; }
 .diary-empty-copy { font-size: 14px; color: var(--muted); margin: 0; }
 .diary-section-intro { color: var(--muted); font-size: 14px; margin: 20px 0 24px; }
-.diary-note-content { padding: 24px 32px; border-left: 3px solid var(--secondary); background: var(--secondary-soft); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font: 400 18px/1.8 var(--font-display); white-space: pre-wrap; overflow-wrap: anywhere; }
-.diary-quotes { padding-top: 32px; border-top: 1px solid var(--line); }
+.diary-note-surface { padding: 32px; border-left: 4px solid var(--secondary); background: var(--secondary-soft); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.diary-note-content { font: 400 18px/1.8 var(--font-display); white-space: pre-wrap; overflow-wrap: anywhere; }
+.diary-note-surface .diary-note-actions { margin-top: 24px; }
+.diary-quotes { padding: 32px; background: color-mix(in srgb, var(--paper), var(--white) 50%); border-radius: var(--radius-sm); }
+.diary-quotes .diary-section-heading > button { border-color: var(--accent); }
 .diary-editor { background: var(--white); padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .diary-editor > label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 8px; }
 .diary-editor textarea { display: block; font: 400 16px/1.7 var(--font-ui); min-width: 0; margin: 0 0 20px; border-color: var(--control-border); }
@@ -78,9 +83,10 @@
 .diary-quote-source > span > span { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; overflow-wrap: anywhere; }
 .diary-quote-source:is(:hover, :focus-visible) strong { text-decoration: underline; text-underline-offset: 4px; }
 .quote-open-book { flex-shrink: 0; white-space: nowrap; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
-.journal-book-footer { max-width: 900px; margin: 36px auto 0 0; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 24px; font-size: 13px; color: var(--muted); }
-.journal-book-footer .text-button { padding: 12px 0; min-height: 44px; font-size: 13px; color: var(--danger); }
-.journal-book-footer .text-button:hover { color: var(--danger-dark); text-decoration: underline; text-underline-offset: 4px; }
+.journal-book-footer { max-width: 900px; margin: 64px auto 0 0; padding: 16px 24px; border-top: 1px solid var(--line); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--paper), var(--danger-soft) 50%); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; font-size: 13px; color: var(--muted); }
+.journal-book-footer > p { flex: 1 1 320px; margin: 0; }
+.journal-book-footer .text-button { display: inline-flex; align-items: center; gap: 8px; padding: 12px 8px; min-height: 44px; font-size: 13px; color: var(--danger); border-radius: var(--radius-sm); }
+.journal-book-footer .text-button:hover { color: var(--danger-dark); background: var(--danger-soft); text-decoration: underline; text-underline-offset: 4px; }
 .journal-book-footer .text-button:focus-visible { outline: 2px solid var(--danger); outline-offset: 4px; border-radius: var(--radius-sm); }
 .collection-heading { display: flex; align-items: center; justify-content: space-between; gap: 32px; margin-bottom: 48px; }
 .collection-heading h1 { font: 400 44px/1.15 var(--font-display); letter-spacing: -.025em; margin: 8px 0 16px; }
@@ -111,4 +117,62 @@
   .journal-book-actions label { flex-wrap: wrap; gap: 8px; }
   .diary-section-heading { flex-wrap: wrap; }
   .diary-editor-footer { align-items: flex-start; }
+}
+
+/* Reading journal: distinguish notes, quotations and book management without cards. */
+.journal-page .diary-quote { padding-top: 40px; padding-bottom: 40px; }
+.journal-page .diary-quote blockquote { border-left-width: 4px; }
+.journal-page .diary-quote footer { margin-left: 28px; }
+.journal-page .diary-quote + .diary-quote { margin-top: 16px; }
+.journal-page .diary-quote .text-button { color: var(--danger); min-height: 44px; padding: 8px; border-radius: var(--radius-sm); }
+.journal-page .diary-quote .text-button:hover { color: var(--danger-dark); background: var(--danger-soft); }
+
+@media (max-width: 768px) {
+  .journal-page, .collection-page { padding: 32px 24px 48px; }
+  .book-introduction { grid-template-columns: 180px minmax(0, 1fr); gap: 24px; }
+  .journal-book-info h1 { font-size: 34px; }
+  .journal-rating .rated { flex-wrap: wrap; }
+  .journal-author { overflow-wrap: anywhere; }
+  .book-reading-state { padding: 20px; }
+  .reading-state-heading { flex-wrap: wrap; gap: 8px 16px; }
+  .journal-book-actions label { min-width: 0; }
+  .journal-book-actions select, .journal-progress-form input, .quote-page-field input { font-size: 16px; }
+  .collection-heading { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 32px; }
+  .collection-total { text-align: left; }
+  .collection-total strong { display: inline; font-size: 28px; margin-right: 12px; }
+  .collection-results { flex-wrap: wrap; gap: 8px 16px; }
+  .collection-search > button { min-width: 44px; min-height: 44px; }
+  .diary-quote-source { flex-wrap: wrap; gap: 12px; }
+  .quote-open-book { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (max-width: 480px) {
+  .journal-page, .collection-page { padding: 24px 16px 40px; }
+  .book-introduction { grid-template-columns: minmax(0, 1fr); gap: 32px; margin-top: 24px; }
+  .journal-cover { width: 200px; max-width: 100%; }
+  .journal-cover > p { margin-top: 12px; }
+  .journal-book-info h1, .collection-heading h1 { font-size: 34px; }
+  .journal-progress-form, .journal-book-actions { flex-direction: column; align-items: stretch; }
+  .journal-progress-form label, .journal-book-actions label { display: grid; gap: 8px; }
+  .journal-progress-form input { width: 100%; }
+  .journal-dates { gap: 16px 24px; }
+  .book-diary { padding-top: 24px; }
+  .book-diary-heading { margin-bottom: 32px; }
+  .book-diary-heading h2 { font-size: 28px; }
+  .diary-section-heading { gap: 16px; }
+  .diary-section-intro { margin: 16px 0 20px; }
+  .diary-note-surface, .diary-quotes, .diary-editor { padding: 20px; }
+  .diary-note-actions { flex-direction: column; align-items: stretch; }
+  .diary-editor-footer { gap: 16px; }
+  .diary-editor .diary-controls { width: 100%; flex-direction: column; align-items: stretch; }
+  .diary-section-break { margin: 32px 0; gap: 16px; }
+  .diary-quote blockquote { font-size: 22px; padding-left: 16px; }
+  .diary-quote footer, .journal-page .diary-quote footer, .diary-quote-source { margin-left: 20px; }
+  .diary-quote footer { gap: 8px 16px; }
+  .diary-quote, .journal-page .diary-quote { padding-top: 24px; padding-bottom: 24px; }
+  .diary-quote + .diary-quote, .journal-page .diary-quote + .diary-quote { margin-top: 8px; }
+  .diary-quote .text-button { min-height: 44px; }
+  .journal-book-footer { margin-top: 32px; padding: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .journal-book-footer > p { flex: auto; }
+  .collection-page .collection-empty { padding: 32px 16px; }
 }

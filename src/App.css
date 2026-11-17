@@ -13,6 +13,7 @@
 .page { max-width: 1260px; margin: 0 auto; padding: 62px 58px 80px; }
 .page-intro { margin-bottom: 54px; }
 .eyebrow { color: var(--accent); font-size: 10px; font-weight: 600; letter-spacing: .17em; text-transform: uppercase; }
+.modal .eyebrow { font-size: 12px; line-height: 1.5; letter-spacing: .1em; }
 h1 { font: 400 48px/1.12 var(--font-display); letter-spacing: -.035em; margin-bottom: 12px; }
 .page-intro > p:last-child, .library-header > div > p:last-child { color: var(--muted); font-size: 15px; }
 .section-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 13px; margin-bottom: 22px; }
@@ -93,7 +94,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .progress-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 24px; }
 .progress-form label, .quote-form label { display: grid; gap: 8px; font-size: 12px; color: var(--muted); }
 .progress-form input, .quote-form input { width: 110px; }
-.secondary-button, .destructive-button { min-height: 44px; padding: 12px 20px; border: 1px solid var(--control-border); border-radius: var(--radius-sm); color: var(--accent); background: var(--white); font-size: 12px; line-height: 1.5; }
+.secondary-button, .destructive-button { min-height: 44px; padding: 12px 20px; border: 1px solid var(--control-border); border-radius: var(--radius-sm); color: var(--accent); background: var(--white); font-size: 14px; line-height: 1.6; }
 .secondary-button:not(:disabled):hover { background: var(--paper); }
 .secondary-button:not(:disabled):active { background: var(--accent-soft); }
 .destructive-button { color: var(--danger); border-color: var(--danger); }
@@ -132,3 +133,28 @@ textarea { width: 100%; resize: vertical; padding: 15px; border: 1px solid var(-
 /* Keep the existing line slot and use bottom padding for a 24–32px visual gap. */
 .quotes-empty-cta { position: relative; top: var(--space-3); border-color: var(--accent); margin-block: -12px; }
 .quotes-empty-cta:not(:disabled):hover { background: var(--accent-soft); }
+
+@media (max-width: 768px) {
+  .page { padding: 32px 24px 48px; }
+  :where(button, input, select) { min-height: 44px; }
+  .cover-placeholder { overflow-wrap: anywhere; }
+  .modal-backdrop { padding: 16px; }
+  .modal { max-width: 100%; max-height: calc(100dvh - 32px); }
+  .modal h2 { overflow-wrap: anywhere; }
+  .close-button { width: 44px; height: 44px; }
+  .form-actions { flex-wrap: wrap; }
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-grid label { min-width: 0; }
+  .form-grid input, .form-grid select { min-height: 44px; font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 24px 16px 40px; }
+  .modal-backdrop { padding: 12px; }
+  .modal { width: 100%; padding: 24px; max-height: calc(100dvh - 24px); }
+  .modal-heading { gap: 16px; align-items: flex-start; }
+  .modal-heading h2 { font-size: 28px; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .form-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-top: 24px; }
+  .form-actions > button { width: 100%; }
+}
